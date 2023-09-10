@@ -16,7 +16,7 @@ $id = $_POST['id'];
 $deleteRecipeStatement = $mysqlClient->prepare('DELETE FROM recipes WHERE recipe_id = :id');
 $deleteRecipeStatement->execute([
     'id' => $id,
-]);
+]) or die(print_r($db->errorInfo()));
 
 header('Location: '.$rootUrl.'home.php');
 ?>

@@ -22,7 +22,7 @@ if (isset($postData['email']) &&  isset($postData['password'])) {
                 'LOGGED_USER',
                 $loggedUser['email'],
                 [
-                    'expires' => time() + 30*24*3600,
+                    'expires' => time() + 24*3600,
                     'secure' => true,
                     'httponly' => true,
                 ]
@@ -63,7 +63,33 @@ if (isset($_COOKIE['LOGGED_USER']) || isset($_SESSION['LOGGED_USER'])) {
         <input type="password" class="form-control" id="password" name="password">
     </div>
     <button type="submit" class="btn btn-primary">Envoyer</button>
-</form>
+    </form>
+    <p>Vous n'avez pas encore de compte? Créez un pour avoir un acces illimité au site</p>
+    <form action="<?php echo($rootUrl . 'recipes/user_create.php'); ?>" method="post">
+    <?php if(isset($errorMessage)) : ?>
+        <div class="alert alert-danger" role="alert">
+            <?php echo($errorMessage); ?>
+        </div>
+    <?php endif; ?>
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email" aria-describedby="email-help" placeholder="you@exemple.com">
+        <div id="email-help" class="form-text">Tapez votre email</div>
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">Mot de passe</label>
+        <input type="password" class="form-control" id="password" name="password">
+    </div>
+    <div class="mb-3">
+        <label for="age" class="form-label">Your age</label>
+        <input type="numbers" class="form-control" id="age" name="age">
+    </div>
+    <div class="mb-3">
+        <label for="full_name" class="form-label">Full name</label>
+        <input type="text" class="form-control" id="full_name" name="full_name">
+    </div>
+    <button type="submit" class="btn btn-primary">Envoyer</button>
+    </form>
 <?php else: ?>
     <div class="alert alert-success" role="alert">
         Bonjour <?php echo($loggedUser['email']); ?> !

@@ -7,16 +7,20 @@ include_once('./../variables.php');
 
 // Vérification du formulaire soumis
 if (
-    !isset($_POST['title']) 
-    || !isset($_POST['recipe'])
+    !isset($_POST['email']) 
+    || !isset($_POST['password'])
+    || !isset($_POST['age'])
+    || !isset($_POST['full_name'])
     )
 {
-	echo 'Il faut un titre et une recette pour soumettre le formulaire.';
+	echo 'Il faut tout l\'information pour créer un compte';
     return;
 }	
 
 $title = $_POST['title'];
 $recipe = $_POST['recipe'];
+$age = $_POST['age'];
+$full_name = $_POST['full_name'];
 
 // Faire l'insertion en base
 $insertRecipe = $mysqlClient->prepare('INSERT INTO recipes(title, recipe, author, is_enabled) VALUES (:title, :recipe, :author, :is_enabled)');
