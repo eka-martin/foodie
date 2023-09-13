@@ -17,18 +17,19 @@ if (
     return;
 }	
 
-$title = $_POST['title'];
-$recipe = $_POST['recipe'];
+$email = $_POST['email'];
+$password = $_POST['password'];
 $age = $_POST['age'];
 $full_name = $_POST['full_name'];
 
 // Faire l'insertion en base
-$insertRecipe = $mysqlClient->prepare('INSERT INTO recipes(title, recipe, author, is_enabled) VALUES (:title, :recipe, :author, :is_enabled)');
-$insertRecipe->execute([
-    'title' => $title,
-    'recipe' => $recipe,
-    'is_enabled' => 1,
-    'author' => $loggedUser['email'],
+$insertUser = $mysqlClient->prepare('INSERT INTO users(email, password, full_name, age) VALUES (:email, :password, :full_name, :age)');
+$insertUser->execute([
+    'email' => $email,
+    'password' => $password,
+    'full_name' => $full_name,
+    'age' => $age,
+    
 ]) or die(print_r($db->errorInfo()));
 
 ?>
@@ -50,17 +51,9 @@ $insertRecipe->execute([
 
     <!-- MESSAGE DE SUCCES -->
     <?php include_once($rootPath.'/header.php'); ?>
-        <h1>Recette ajoutée avec succès !</h1>
+        <h1>L'utilisateur est crée avec succès !</h1>
         
-        <div class="card">
-            
-            <div class="card-body">
-                <h5 class="card-title"><?php echo $title ; ?></h5>
-                <p class="card-text"><b>Email</b> : <?php echo $loggedUser['email']; ?></p>
-                <p class="card-text"><b>Recette</b> : <?php echo strip_tags($recipe); ?></p>
-            </div>
-        </div>
-    </div>
+         </div>
     <?php include_once($rootPath.'/footer.php'); ?>
 </body>
 </html>

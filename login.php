@@ -22,7 +22,7 @@ if (isset($postData['email']) &&  isset($postData['password'])) {
                 'LOGGED_USER',
                 $loggedUser['email'],
                 [
-                    'expires' => time() + 24*3600,
+                    'expires' => time() + 6*3600,
                     'secure' => true,
                     'httponly' => true,
                 ]
@@ -65,7 +65,7 @@ if (isset($_COOKIE['LOGGED_USER']) || isset($_SESSION['LOGGED_USER'])) {
     <button type="submit" class="btn btn-primary">Envoyer</button>
     </form>
     <p>Vous n'avez pas encore de compte? Créez un pour avoir un acces illimité au site</p>
-    <form action="<?php echo($rootUrl . 'recipes/user_create.php'); ?>" method="post">
+    <form action="home.php" method="post">
     <?php if(isset($errorMessage)) : ?>
         <div class="alert alert-danger" role="alert">
             <?php echo($errorMessage); ?>

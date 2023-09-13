@@ -21,22 +21,5 @@ try {
     die('Erreur : '.$exception->getMessage());
 }
 
-// Si tout va bien, on peut continuer
-
 // On récupère tout le contenu de la table recipes
 // On ne concatène JAMAIS une requête SQL pour passer des variables, au risque de créer des injections SQL !
-$sqlQuery = "SELECT * FROM recipes WHERE author = :author AND is_enabled = :is_enabled";
-$recipesStatement = $mysqlClient->prepare($sqlQuery);
-$recipesStatement->execute([
-    'author' => $_GET['author'],
-    'is_enabled' => true,
-]);
-$recipes = $recipesStatement->fetchAll();
-
-// On affiche chaque recette une à une
-foreach ($recipes as $recipe) {
-?>
-    <p><?php echo $recipe['title']; ?></p>
-<?php
-}
-?>
