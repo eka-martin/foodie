@@ -14,13 +14,39 @@ if (!isset($getData['id']) && is_numeric($getData['id']))
 
 $recipeId = $getData['id'];
 
-$retrieveRecipeStatement = $mysqlClient->prepare('SELECT * FROM recipes WHERE recipe_id = :id');
-$retrieveRecipeStatement->execute([
+$retrieveRecipeWithCommentsStatement = $mysqlClient->prepare('SELECT *, DATE_FORMAT(c.created_at, "%d/%m/%Y") as comment_date FROM recipes r LEFT JOIN comments c on r.recipe_id = c.recipe_id WHERE r.recipe_id = :id');
+$retrieveRecipeWithCommentsStatement->execute([
     'id' => $recipeId,
 ]);
 
-$recipe = $retrieveRecipeStatement->fetch(PDO::FETCH_ASSOC);
+$recipeWithComments = $retrieveRecipeWithCommentsStatement->fetchAll(PDO::FETCH_ASSOC);
 
+$averageRatingStatment = $mysqlClient->prepare('SELECT ROUND(AVG(c.review),1) as rating FROM recipes r LEFT JOIN comments c on r.recipe_id = c.recipe_id WHERE r.recipe_id = :id');
+$averageRatingStatment->execute([
+    'id' => $recipeId,
+]);
+
+$averageRating = $averageRatingStatment->fetch(PDO::FETCH_ASSOC);
+
+$recipe = [
+    'recipe_id' => $recipeWithComments[0]['recipe_id'],
+    'title' => $recipeWithComments[0]['title'],
+    'recipe' => $recipeWithComments[0]['recipe'],
+    'author' => $recipeWithComments[0]['author'],
+    'comments' => [],
+    'rating' => $averageRating['rating'],
+];
+
+foreach($recipeWithComments as $comment) {
+    if (!is_null($comment['comment_id'])) {
+        $recipe['comments'][] = [
+            'comment_id' => $comment['comment_id'],
+            'comment' => $comment['comment'],
+            'user_id' => (int) $comment['user_id'],
+            'created_at' => $comment['comment_date'],
+        ];
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -46,8 +72,27 @@ $recipe = $retrieveRecipeStatement->fetch(PDO::FETCH_ASSOC);
             </article>
             <aside class="col">
                 <p><i>Contribuée par <?php echo($recipe['author']); ?></i></p>
+                <p><b>Evaluée par la communauté à <?php echo($recipe['rating']); ?> / 5</b></p>
             </aside>
         </div>
+
+        <?php if(count($recipe['comments']) > 0): ?>
+        <hr />
+        <h2>Commentaires</h2>
+        <div class="row">
+            <?php foreach($recipe['comments'] as $comment): ?>
+                <div class="comment">
+                    <p><?php echo($comment['created_at']); ?></p>
+                    <p><?php echo($comment['comment']); ?></p>
+                    <i>(<?php echo(display_user($comment['user_id'], $users)); ?>)</i>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+        <hr />
+        <?php if (isset($loggedUser)) : ?>
+            <?php include_once($rootPath.'/comments/create.php'); ?>
+        <?php endif; ?>
     </div>
     <?php include_once($rootPath.'/footer.php'); ?>
 </body>

@@ -16,13 +16,13 @@ if (isset($postData['email']) &&  isset($postData['password'])) {
             ];
 
             /**
-             * Cookie qui expire dans un an
+             * Cookie qui expire dans 6h
              */
             setcookie(
                 'LOGGED_USER',
                 $loggedUser['email'],
                 [
-                    'expires' => time() + 6*3600,
+                    'expires' => time() + 3600,
                     'secure' => true,
                     'httponly' => true,
                 ]

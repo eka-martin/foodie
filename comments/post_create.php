@@ -11,6 +11,8 @@ $postData = $_POST;
 if (
     !isset($postData['comment']) &&
     !isset($postData['recipe_id']) &&
+    !isset($postData['review']) &&
+    !is_numeric($postData['review']) &&
     !is_numeric($postData['recipe_id'])
     )
 {
@@ -25,12 +27,14 @@ if (!isset($loggedUser)) {
 
 $comment = $postData['comment'];
 $recipeId = $postData['recipe_id'];
+$review = $postData['review'];
 
-$insertRecipe = $mysqlClient->prepare('INSERT INTO comments(comment, recipe_id, user_id) VALUES (:comment, :recipe_id, :user_id)');
+$insertRecipe = $mysqlClient->prepare('INSERT INTO comments(comment, recipe_id, user_id, review) VALUES (:comment, :recipe_id, :user_id, :review)');
 $insertRecipe->execute([
     'comment' => $comment,
     'recipe_id' => $recipeId,
     'user_id' => retrieve_id_from_user_mail($loggedUser['email'], $users),
+    'review' => (int) $review,
 ]);
 
 ?>
@@ -56,6 +60,7 @@ $insertRecipe->execute([
         <div class="card">
             
             <div class="card-body">
+                <p class="card-text"><b>Note</b> : <?php echo($review); ?> / 5</p>
                 <p class="card-text"><b>Votre commentaire</b> : <?php echo strip_tags($comment); ?></p>
             </div>
         </div>

@@ -23,6 +23,11 @@
           <a class="nav-link" href="<?php echo($rootUrl). 'recipes/create.php'; ?>">Ajoutez une recette !</a>
         </li>
         <?php endif; ?>
+        <?php if(isset($loggedUser)) : ?>
+        <li class="nav-item">
+          <a class="nav-link" href="<?php echo($rootUrl). 'logout.php'; ?>">Log out</a>
+        </li>
+        <?php endif; ?>
       </ul>
     </div>
   </div>
